@@ -26,9 +26,17 @@ query = st.text_area("Escreva sua sintaxe de busca:", height=400)
 
 def highlight_syntax(text):
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    # Operadores em azul
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
+
+    # Parênteses em verde
     text = re.sub(r'\(', r'<span style="color:green; font-weight:bold;">(</span>', text)
     text = re.sub(r'\)', r'<span style="color:green; font-weight:bold;">)</span>', text)
+
+    # Hashtags em laranja
+    text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
+
     return text
 
 def detectar_problemas(text):
@@ -70,7 +78,3 @@ if query.strip():
         f"<div style='font-family:Courier New, monospace; font-size:40px;'>{highlighted}</div>",
         unsafe_allow_html=True
     )
-    
-# Hashtags em laranja
-text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
-
