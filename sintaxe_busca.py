@@ -4,7 +4,7 @@ import re
 st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
 st.title("🔍 Elaboração de Sintaxe de busca")
 
-# CSS global para aplicar a fonte e tamanho
+# CSS global para fonte e tamanho
 st.markdown("""
     <style>
     textarea {
@@ -20,12 +20,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("Digite sua sintaxe/regra com operadores booleanos (**AND**, **OR**, **NOT**) e veja os destaques na sintaxe")
+st.markdown("Digite sua sintaxe/regra com operadores booleanos (**AND**, **OR**, **NOT**) e veja os destaques na sintaxe.")
 
 query = st.text_area("Escreva sua sintaxe de busca:", height=400)
 
+# Função de destaque visual
 def highlight_syntax(text):
-    # Escapar HTML
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     # Operadores booleanos em azul
@@ -38,25 +38,30 @@ def highlight_syntax(text):
     # Hashtags em laranja
     text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
 
-    # Conteúdo entre aspas (simples ou duplas) em cinza
+    # Aspas em cinza
     text = re.sub(r'(\"[^\"]*\"|\'.*?\')', r'<span style="color:gray; font-weight:bold;">\1</span>', text)
 
     return text
 
+# Função de verificação de problemas
 def detectar_problemas(text):
     # Parênteses desbalanceados
     alerta_parenteses = ""
     if text.count('(') != text.count(')'):
         alerta_parenteses = "<span style='color:red; font-weight:bold;'>⚠️ Parênteses abertos!</span>"
 
-    # Detectar operadores inválidos (grafia incorreta)
+    # Aspas desbalanceadas
+    alerta_aspas = ""
+    if text.count('"') % 2 != 0 or text.count("'") % 2 != 0:
+        alerta_aspas = "<span style='color:red; font-weight:bold;'>⚠️ Aspas abertas sem fechamento!</span>"
+
+    # Operadores inválidos
     operadores_validos = {"AND", "OR", "NOT"}
-    palavras = re.findall(r'\b\w{2,}\b', text)  # pega todas as palavras com 2 ou mais letras
+    palavras = re.findall(r'\b\w{2,}\b', text)
     operadores_suspeitos = [p for p in palavras if p.upper() in operadores_validos and p.upper() != p]
     operadores_incorretos = [p for p in palavras if p.upper() not in operadores_validos and p.lower() in {"and", "or", "not"}]
-
-    # Exibe erro se for um operador válido escrito de forma errada
     erros = operadores_suspeitos + operadores_incorretos
+
     alerta_operadores = ""
     if erros:
         alerta_operadores = (
@@ -65,14 +70,15 @@ def detectar_problemas(text):
             "</span>"
         )
 
-    return alerta_parenteses, alerta_operadores
+    return alerta_parenteses, alerta_aspas, alerta_operadores
 
+# Execução da análise e visualização
 if query.strip():
-    alerta_parenteses, alerta_operadores = detectar_problemas(query)
+    alerta_parenteses, alerta_aspas, alerta_operadores = detectar_problemas(query)
 
-    if alerta_parenteses or alerta_operadores:
+    if alerta_parenteses or alerta_aspas or alerta_operadores:
         st.markdown(
-            f"<div style='font-family:Courier New, monospace; font-size:40px;'>{alerta_parenteses}<br>{alerta_operadores}</div>",
+            f"<div style='font-family:Courier New, monospace; font-size:40px;'>{alerta_parenteses}<br>{alerta_aspas}<br>{alerta_operadores}</div>",
             unsafe_allow_html=True
         )
 
