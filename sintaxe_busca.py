@@ -25,9 +25,10 @@ st.markdown("Digite sua sintaxe/regra com operadores booleanos (**AND**, **OR**,
 query = st.text_area("Escreva sua sintaxe de busca:", height=400)
 
 def highlight_syntax(text):
+    # Escapar HTML
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-    # Operadores em azul
+    # Operadores booleanos em azul
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
 
     # Parênteses em verde
@@ -36,6 +37,9 @@ def highlight_syntax(text):
 
     # Hashtags em laranja
     text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
+
+    # Conteúdo entre aspas (simples ou duplas) em cinza
+    text = re.sub(r'(\"[^\"]*\"|\'.*?\')', r'<span style="color:gray; font-weight:bold;">\1</span>', text)
 
     return text
 
