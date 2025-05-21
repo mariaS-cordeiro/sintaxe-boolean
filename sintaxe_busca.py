@@ -71,3 +71,6 @@ if query.strip():
         unsafe_allow_html=True
     )
     
+# Hashtags em laranja
+text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
+
