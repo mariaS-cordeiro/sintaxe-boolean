@@ -9,7 +9,7 @@ st.markdown("""
     <style>
     textarea {
         font-family: 'Courier New', monospace !important;
-        font-size: 40px !important;
+        font-size: 30px !important;
         line-height: 1.2 !important;
     }
     div[data-testid="stMarkdownContainer"] > div {
@@ -73,7 +73,7 @@ if query.strip():
         )
 
     highlighted = highlight_syntax(query)
-    st.markdown("### 💡 Visualização com Destaque de Sintaxe")
+    st.markdown("### 💡 Visualização com destaque na sintaxe/regra")
     st.markdown(
         f"<div style='font-family:Courier New, monospace; font-size:40px;'>{highlighted}</div>",
         unsafe_allow_html=True
