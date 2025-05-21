@@ -1,7 +1,7 @@
 import streamlit as st
 import re
 
-st.set_page_config(page_title="Construtor de Sintaxe de Busca", layout="wide")
+st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
 st.title("🔍 Construtor de Sintaxe de Busca")
 
 st.markdown("""
