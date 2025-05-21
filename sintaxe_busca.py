@@ -70,3 +70,4 @@ if query.strip():
         f"<div style='font-family:Courier New, monospace; font-size:40px;'>{highlighted}</div>",
         unsafe_allow_html=True
     )
+    
