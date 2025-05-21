@@ -2,13 +2,13 @@ import streamlit as st
 import re
 
 st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
-st.title("🔍 Construtor de Sintaxe de Busca")
+st.title("🔍 Elaboração de Sintaxe de busca")
 
 st.markdown("""
 Digite sua expressão com operadores booleanos (**AND**, **OR**, **NOT**) e veja o destaque de sintaxe.
 """)
 
-query = st.text_area("Escreva sua expressão:", height=200)
+query = st.text_area("Escreva sua expressão:", height=500)
 
 def highlight_syntax(text):
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
