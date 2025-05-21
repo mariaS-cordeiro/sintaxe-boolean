@@ -43,7 +43,7 @@ def detectar_problemas(text):
     # Parênteses desbalanceados
     alerta_parenteses = ""
     if text.count('(') != text.count(')'):
-        alerta_parenteses = "<span style='color:red; font-weight:bold;'>⚠️ Parênteses desbalanceados!</span>"
+        alerta_parenteses = "<span style='color:red; font-weight:bold;'>⚠️ Parênteses abertos!</span>"
 
     # Detectar operadores inválidos (grafia incorreta)
     operadores_validos = {"AND", "OR", "NOT"}
