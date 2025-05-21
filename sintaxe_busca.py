@@ -4,7 +4,7 @@ import re
 st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
 st.title("🔍 Construtor de Sintaxe de Busca")
 
-# CSS: aplica fonte Courier New tamanho 40 na entrada e saída
+# CSS global para aplicar a fonte e tamanho
 st.markdown("""
     <style>
     textarea {
@@ -32,34 +32,38 @@ def highlight_syntax(text):
     return text
 
 def detectar_problemas(text):
-    # Verifica parênteses desbalanceados
-    parenteses_balanceados = text.count('(') == text.count(')')
+    # Parênteses desbalanceados
     alerta_parenteses = ""
-    if not parenteses_balanceados:
+    if text.count('(') != text.count(')'):
         alerta_parenteses = "<span style='color:red; font-weight:bold;'>⚠️ Parênteses desbalanceados!</span>"
 
-    # Detecta operadores inválidos
+    # Detectar operadores inválidos (grafia incorreta)
     operadores_validos = {"AND", "OR", "NOT"}
-    palavras_maiusculas = re.findall(r'\b[A-Z]{2,}\b', text)
-    operadores_errados = [p for p in palavras_maiusculas if p.upper() not in operadores_validos]
+    palavras = re.findall(r'\b\w{2,}\b', text)  # pega todas as palavras com 2 ou mais letras
+    operadores_suspeitos = [p for p in palavras if p.upper() in operadores_validos and p.upper() != p]
+    operadores_incorretos = [p for p in palavras if p.upper() not in operadores_validos and p.lower() in {"and", "or", "not"}]
 
+    # Exibe erro se for um operador válido escrito de forma errada
+    erros = operadores_suspeitos + operadores_incorretos
     alerta_operadores = ""
-    if operadores_errados:
+    if erros:
         alerta_operadores = (
             "<span style='color:red; font-weight:bold;'>"
-            f"⚠️ Operadores inválidos detectados: {', '.join(operadores_errados)}"
+            f"⚠️ Operadores inválidos detectados (grafia incorreta): {', '.join(erros)}"
             "</span>"
         )
 
     return alerta_parenteses, alerta_operadores
 
 if query.strip():
-    # Verifica e exibe alertas
     alerta_parenteses, alerta_operadores = detectar_problemas(query)
-    if alerta_parenteses or alerta_operadores:
-        st.markdown(f"<div style='font-family:Courier New, monospace; font-size:40px;'>{alerta_parenteses}<br>{alerta_operadores}</div>", unsafe_allow_html=True)
 
-    # Exibe visualização com destaque
+    if alerta_parenteses or alerta_operadores:
+        st.markdown(
+            f"<div style='font-family:Courier New, monospace; font-size:40px;'>{alerta_parenteses}<br>{alerta_operadores}</div>",
+            unsafe_allow_html=True
+        )
+
     highlighted = highlight_syntax(query)
     st.markdown("### 💡 Visualização com Destaque de Sintaxe")
     st.markdown(
