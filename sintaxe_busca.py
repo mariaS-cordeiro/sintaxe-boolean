@@ -4,7 +4,7 @@ import re
 st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
 st.title("🔍 Elaboração de Sintaxe de Busca")
 
-# CSS global para fonte e tamanho
+# Estilo CSS
 st.markdown("""
     <style>
     textarea {
@@ -24,39 +24,34 @@ st.markdown("Digite sua sintaxe/regra com operadores booleanos (**AND**, **OR**,
 
 query = st.text_area("Escreva sua sintaxe de busca:", height=400)
 
-# Função de destaque visual com placeholders para aspas
 def highlight_syntax(text):
-    # Escapar HTML
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-    # Protege trechos entre aspas com placeholders
-    aspas_duplas = re.findall(r'"[^"]*"', text)
-    aspas_simples = re.findall(r"'[^']*'", text)
-
+    # Proteger trechos entre aspas com placeholders
     placeholder_map = {}
-    for i, trecho in enumerate(aspas_duplas + aspas_simples):
-        chave = f"__ASPAS_{i}__"
-        placeholder_map[chave] = trecho
-        text = text.replace(trecho, chave, 1)
+    def substituir_aspas(m):
+        chave = f"__ASPAS_{len(placeholder_map)}__"
+        placeholder_map[chave] = m.group(0)
+        return chave
 
-    # Operadores booleanos em azul
+    text = re.sub(r'"[^"]*"|\'[^\']*\'', substituir_aspas, text)
+
+    # Destaque: Operadores booleanos em azul
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
 
-    # Parênteses em verde
+    # Destaque: Parênteses em verde
     text = re.sub(r'\(', r'<span style="color:green; font-weight:bold;">(</span>', text)
     text = re.sub(r'\)', r'<span style="color:green; font-weight:bold;">)</span>', text)
 
-    # Hashtags em laranja
+    # Destaque: Hashtags em laranja
     text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
 
-    # Restaura trechos entre aspas em cinza
+    # Restaurar os trechos entre aspas em cinza
     for chave, original in placeholder_map.items():
-        cinza = f'<span style="color:gray; font-weight:bold;">{original}</span>'
-        text = text.replace(chave, cinza)
+        text = text.replace(chave, f'<span style="color:gray; font-weight:bold;">{original}</span>')
 
     return text
 
-# Função de verificação de problemas
 def detectar_problemas(text):
     alerta_parenteses = ""
     if text.count('(') != text.count(')'):
@@ -82,7 +77,6 @@ def detectar_problemas(text):
 
     return alerta_parenteses, alerta_aspas, alerta_operadores
 
-# Execução principal
 if query.strip():
     alerta_parenteses, alerta_aspas, alerta_operadores = detectar_problemas(query)
 
