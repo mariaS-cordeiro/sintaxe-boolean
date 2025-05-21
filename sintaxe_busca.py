@@ -48,7 +48,7 @@ def highlight_syntax(text):
 
     # Restaurar os trechos entre aspas em cinza
     for chave, original in placeholder_map.items():
-        text = text.replace(chave, f'<span style="color:gray; font-weight:bold;">{original}</span>')
+        text = text.replace(chave, f'<span style="color:gray;">{original}</span>')
 
     return text
 
