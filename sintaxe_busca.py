@@ -9,7 +9,7 @@ st.markdown("""
     <style>
     textarea {
         font-family: 'Courier New', monospace !important;
-        font-size: 40px !important;
+        font-size: 30px !important;
         line-height: 1.2 !important;
     }
     div[data-testid="stMarkdownContainer"] > div {
@@ -22,7 +22,7 @@ st.markdown("""
 
 st.markdown("Digite sua expressão com operadores booleanos (**AND**, **OR**, **NOT**) e veja o destaque de sintaxe.")
 
-query = st.text_area("Escreva sua expressão:", height=300)
+query = st.text_area("Escreva sua expressão:", height=400)
 
 def highlight_syntax(text):
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
