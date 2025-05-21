@@ -5,18 +5,9 @@ st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
 st.title("🔍 Elaboração de Sintaxe de busca")
 
 # Aplica CSS à caixa de texto e à pré-visualização
-st.markdown("""
-    <style>
-    textarea {
-        font-family: 'Courier New', monospace !important;
-        font-size: 40px !important;
-    }
-    div[data-testid="stMarkdownContainer"] > div {
-        font-family: 'Courier New', monospace;
-        font-size: 18px;
-    }
-    </style>
-""", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='font-family:Courier New, monospace; font-size:40px;'>{highlighted}</div>",
+        unsafe_allow_html=True
 
 st.markdown("""
 Digite sua expressão com operadores booleanos (**AND**, **OR**, **NOT**) e veja o destaque de sintaxe.
@@ -59,6 +50,6 @@ if query.strip():
     highlighted = highlight_syntax(query)
     st.markdown("### 💡 Visualização com Destaque de Sintaxe")
     st.markdown(
-        f"<div style='font-family:Courier New, monospace; font-size:18px;'>{highlighted}</div>",
+        f"<div style='font-family:Courier New, monospace; font-size:50px;'>{highlighted}</div>",
         unsafe_allow_html=True
     )
