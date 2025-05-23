@@ -82,7 +82,7 @@ if query.strip():
 
     if alerta_parenteses or alerta_aspas or alerta_operadores:
         st.markdown(
-            f"<div style='font-family:Courier New, monospace; font-size:40px;'>{alerta_parenteses}<br>{alerta_aspas}<br>{alerta_operadores}</div>",
+            f"<div style='font-family:Courier New, monospace; font-size:30px;'>{alerta_parenteses}<br>{alerta_aspas}<br>{alerta_operadores}</div>",
             unsafe_allow_html=True
         )
 
