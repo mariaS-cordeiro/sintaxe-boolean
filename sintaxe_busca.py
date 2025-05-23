@@ -22,7 +22,7 @@ st.markdown("""
 
 st.markdown("Digite sua sintaxe/regra com operadores booleanos (**AND**, **OR**, **NOT**) e veja os destaques na sintaxe.")
 
-query = st.text_area("Escreva sua sintaxe de busca:", height=400)
+query = st.text_area("Escreva sua sintaxe de busca:", height=500)
 
 def highlight_syntax(text):
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -82,7 +82,7 @@ if query.strip():
 
     if alerta_parenteses or alerta_aspas or alerta_operadores:
         st.markdown(
-            f"<div style='font-family:Courier New, monospace; font-size:30px;'>{alerta_parenteses}<br>{alerta_aspas}<br>{alerta_operadores}</div>",
+            f"<div style='font-family:Courier New, monospace; font-size:20px;'>{alerta_parenteses}<br>{alerta_aspas}<br>{alerta_operadores}</div>",
             unsafe_allow_html=True
         )
 
