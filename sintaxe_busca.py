@@ -43,9 +43,7 @@ def highlight_syntax(text):
         placeholder_map[chave] = m.group(0)
         return chave
 
-    # LINHA CORRIGIDA
-    text = re.sub(r'"[^"]*"|\'[^\']*\'', substituir_aspas, text)
-
+    text = re.sub(r'"[^"]*"|\'[^']*\'', substituir_aspas, text)
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
     text = re.sub(r'\(', r'<span style="color:green; font-weight:bold;">(</span>', text)
     text = re.sub(r'\)', r'<span style="color:green; font-weight:bold;">)</span>', text)
@@ -120,9 +118,20 @@ if st.button("💾 Salvar sintaxe de busca"):
         df_total.to_csv(csv_path, index=False)
         st.success("✅ Sintaxe salva com sucesso!")
 
-# Exibir a tabela com sintaxes salvas
+# Exibir e deletar registros
 if os.path.exists(csv_path):
     st.markdown("### 📋 Tabela de Sintaxes Salvas")
     df_salvas = pd.read_csv(csv_path)
+
+    # Selecionar linha para exclusão
+    st.markdown("#### ❌ Apagar uma entrada específica")
+    index_para_apagar = st.selectbox("Selecione o número da linha para apagar:", df_salvas.index.tolist())
+    st.write(df_salvas.loc[[index_para_apagar]])
+
+    if st.button("🗑️ Apagar linha selecionada"):
+        df_salvas = df_salvas.drop(index=index_para_apagar).reset_index(drop=True)
+        df_salvas.to_csv(csv_path, index=False)
+        st.success("Linha apagada com sucesso. Recarregue a página para atualizar a visualização.")
+
     st.dataframe(df_salvas)
     st.download_button("⬇️ Baixar CSV", data=df_salvas.to_csv(index=False), file_name="sintaxes_salvas.csv", mime="text/csv")
