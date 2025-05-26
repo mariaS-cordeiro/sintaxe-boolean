@@ -43,7 +43,7 @@ def highlight_syntax(text):
         placeholder_map[chave] = m.group(0)
         return chave
 
-    text = re.sub(r'"[^"]*"|\'[^']*\'', substituir_aspas, text)
+    text = re.sub(r"\"[^\"]*\"|'[^']*'", substituir_aspas, text)
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
     text = re.sub(r'\(', r'<span style="color:green; font-weight:bold;">(</span>', text)
     text = re.sub(r'\)', r'<span style="color:green; font-weight:bold;">)</span>', text)
