@@ -43,7 +43,7 @@ def highlight_syntax(text):
         placeholder_map[chave] = m.group(0)
         return chave
 
-    text = re.sub(r'"[^"]*"|\'[^\']*\'', substituir_aspas, text)
+    text = re.sub(r'"[^"]*"|\'[^']*\'', substituir_aspas, text)
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
     text = re.sub(r'\(', r'<span style="color:green; font-weight:bold;">(</span>', text)
     text = re.sub(r'\)', r'<span style="color:green; font-weight:bold;">)</span>', text)
@@ -118,19 +118,10 @@ if st.button("💾 Salvar sintaxe de busca"):
         df_total.to_csv(csv_path, index=False)
         st.success("✅ Sintaxe salva com sucesso!")
 
-# Exibir e deletar registros
+# Exibir registros
 if os.path.exists(csv_path):
     st.markdown("### 📋 Tabela de Sintaxes Salvas")
     df_salvas = pd.read_csv(csv_path)
 
     st.dataframe(df_salvas)
     st.download_button("⬇️ Baixar CSV", data=df_salvas.to_csv(index=False), file_name="sintaxes_salvas.csv", mime="text/csv")
-
-    # Selecionar linha para exclusão por índice da tabela
-    st.markdown("#### ❌ Apagar uma entrada específica")
-    linha_para_excluir = st.number_input("Digite o número da linha para apagar (0 a N):", min_value=0, max_value=len(df_salvas)-1, step=1)
-
-    if st.button("🗑️ Apagar linha selecionada"):
-        df_salvas = df_salvas.drop(index=linha_para_excluir).reset_index(drop=True)
-        df_salvas.to_csv(csv_path, index=False)
-        st.success(f"Linha {linha_para_excluir} apagada com sucesso. Recarregue a página para atualizar a visualização.")
