@@ -1,5 +1,8 @@
 import streamlit as st
+import pandas as pd
 import re
+import os
+from datetime import datetime
 
 st.set_page_config(page_title="Elaboração de Sintaxe de Busca", layout="wide")
 st.title("🔍 Elaboração de Sintaxe de Busca")
@@ -22,31 +25,30 @@ st.markdown("""
 
 st.markdown("Digite sua sintaxe/regra com operadores booleanos (**AND**, **OR**, **NOT**) e veja os destaques na sintaxe.")
 
-query = st.text_area("Escreva sua sintaxe de busca:", height=500)
+# Formulário de entrada
+tematica = st.text_input("Temática da sintaxe")
+aluno = st.text_input("Aluno/Aluna")
+query = st.text_area("Escreva sua sintaxe de busca:", height=300)
 
+# Caminho do CSV para salvar
+csv_path = "sintaxes_salvas.csv"
+
+# Funções de destaque e verificação de erro
 def highlight_syntax(text):
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-    # Proteger trechos entre aspas com placeholders
     placeholder_map = {}
+
     def substituir_aspas(m):
         chave = f"__ASPAS_{len(placeholder_map)}__"
         placeholder_map[chave] = m.group(0)
         return chave
 
-    text = re.sub(r'"[^"]*"|\'[^\']*\'', substituir_aspas, text)
-
-    # Destaque: Operadores booleanos em azul
+    text = re.sub(r'"[^"]*"|\'[^']*\'', substituir_aspas, text)
     text = re.sub(r'\b(AND|OR|NOT)\b', r'<span style="color:blue; font-weight:bold;">\1</span>', text, flags=re.IGNORECASE)
-
-    # Destaque: Parênteses em verde
     text = re.sub(r'\(', r'<span style="color:green; font-weight:bold;">(</span>', text)
     text = re.sub(r'\)', r'<span style="color:green; font-weight:bold;">)</span>', text)
-
-    # Destaque: Hashtags em laranja
     text = re.sub(r'(#\w+)', r'<span style="color:orange; font-weight:bold;">\1</span>', text)
 
-    # Restaurar os trechos entre aspas em cinza
     for chave, original in placeholder_map.items():
         text = text.replace(chave, f'<span style="color:gray;">{original}</span>')
 
@@ -77,6 +79,7 @@ def detectar_problemas(text):
 
     return alerta_parenteses, alerta_aspas, alerta_operadores
 
+# Visualização e validação
 if query.strip():
     alerta_parenteses, alerta_aspas, alerta_operadores = detectar_problemas(query)
 
@@ -92,3 +95,28 @@ if query.strip():
         f"<div style='font-family:Courier New, monospace; font-size:40px;'>{highlighted}</div>",
         unsafe_allow_html=True
     )
+
+    # Botão para salvar
+    if st.button("💾 Salvar sintaxe de busca"):
+        nova_entrada = pd.DataFrame({
+            "temática da sintaxe": [tematica],
+            "aluno/aluna": [aluno],
+            "sintaxe de busca": [query],
+            "data/hora": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        })
+
+        if os.path.exists(csv_path):
+            existente = pd.read_csv(csv_path)
+            df_total = pd.concat([existente, nova_entrada], ignore_index=True)
+        else:
+            df_total = nova_entrada
+
+        df_total.to_csv(csv_path, index=False)
+        st.success("Sintaxe salva com sucesso!")
+
+# Exibir a tabela com sintaxes salvas
+if os.path.exists(csv_path):
+    st.markdown("### 📋 Tabela de Sintaxes Salvas")
+    df_salvas = pd.read_csv(csv_path)
+    st.dataframe(df_salvas)
+    st.download_button("⬇️ Baixar CSV", data=df_salvas.to_csv(index=False), file_name="sintaxes_salvas.csv", mime="text/csv")
